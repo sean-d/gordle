@@ -44,7 +44,7 @@ fyne package
 
 A binary for your OS will be generated in the same directory.
 
-_(Tested only on my Mac M1 for now. Ping me if you tried on another platform and it worked, or not!)_
+_(Tested only on my Mac M1 & Linux for now. Ping me if you tried on another platform and it worked, or not!)_
 
 ## License
 

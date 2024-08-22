@@ -1,3 +1,9 @@
+//go:generate fyne bundle -package gordle -o resources.go assets/AppIcon.svg
+//go:generate fyne bundle -package gordle -o resources.go -append assets/AppIcon.png
+//go:generate fyne bundle -package gordle -o resources.go -append assets/example.png
+//go:generate fyne bundle -package gordle -o resources.go -append assets/about_part1.md
+//go:generate fyne bundle -package gordle -o resources.go -append assets/about_part2.md
+
 package gordle
 
 import (
@@ -31,7 +37,7 @@ func StartFyneGame() {
 	window.SetCloseIntercept(func() {
 		app.Quit()
 	})
-	render(&app, state, window)
+	render(app, state, window)
 
 	mappings := map[fyne.KeyName]string{
 		fyne.KeyA: "A",
@@ -65,16 +71,16 @@ func StartFyneGame() {
 	window.Canvas().SetOnTypedKey(func(key *fyne.KeyEvent) {
 		if letter, exists := mappings[key.Name]; exists {
 			*state = state.typeLetter(letter)
-			render(&app, state, window)
+			render(app, state, window)
 		} else if key.Name == fyne.KeyBackspace {
 			*state = state.backspace()
-			render(&app, state, window)
+			render(app, state, window)
 		} else if key.Name == fyne.KeyReturn {
 			*state = state.enter()
 			if state.errorMessage != "" {
-				displayError(&app, state, window)
+				displayError(app, state, window)
 			}
-			render(&app, state, window)
+			render(app, state, window)
 		}
 	})
 	window.ShowAndRun()
@@ -82,7 +88,7 @@ func StartFyneGame() {
 
 var errorTicker *time.Ticker
 
-func displayError(app *fyne.App, state *AppState, window fyne.Window) {
+func displayError(app fyne.App, state *AppState, window fyne.Window) {
 	if errorTicker != nil {
 		errorTicker.Stop()
 	}
@@ -97,29 +103,25 @@ func displayError(app *fyne.App, state *AppState, window fyne.Window) {
 	}()
 }
 
-func render(app *fyne.App, state *AppState, window fyne.Window) {
-	container := container.New(layout.NewVBoxLayout())
-
-	container.Add(header(app, state))
-	container.Add(statusMessage(state))
-	container.Add(wordRows(state))
-
+func render(app fyne.App, state *AppState, window fyne.Window) {
 	space := canvas.NewRectangle(c.Transparent)
 	space.SetMinSize(fyne.NewSize(0, 40))
-	container.Add(space)
 
-	container.Add(keyboard(app, state, window))
-
-	window.SetContent(container)
+	window.SetContent(container.NewVBox(
+		header(app, state),
+		statusMessage(state),
+		wordRows(state),
+		space,
+		keyboard(app, state, window)))
 }
 
-func header(app *fyne.App, state *AppState) *fyne.Container {
+func header(app fyne.App, state *AppState) *fyne.Container {
 	header := container.New(layout.NewVBoxLayout())
 
 	iconRect := canvas.NewRectangle(c.Transparent)
 	iconRect.SetMinSize(fyne.NewSize(48, 48))
 	icon := widget.NewIcon(resourceAppIconSvg)
-	iconBox := container.New(layout.NewMaxLayout(), iconRect, icon)
+	iconBox := container.NewStack(iconRect, icon)
 
 	title := canvas.NewText("Gordle", black)
 	title.Alignment = fyne.TextAlignCenter
@@ -129,7 +131,7 @@ func header(app *fyne.App, state *AppState) *fyne.Container {
 	helpButtonRect := canvas.NewRectangle(c.Transparent)
 	helpButtonRect.SetMinSize(fyne.NewSize(48, 48))
 	helpButton := widget.NewButton("?", func() { openAboutDialog(app, state) })
-	helpButtonBox := container.New(layout.NewMaxLayout(), helpButtonRect, helpButton)
+	helpButtonBox := container.NewStack(helpButtonRect, helpButton)
 
 	titleRow := container.New(layout.NewBorderLayout(nil, nil, iconBox, helpButtonBox))
 	titleRow.Add(iconBox)
@@ -145,15 +147,15 @@ func header(app *fyne.App, state *AppState) *fyne.Container {
 	return header
 }
 
-func openAboutDialog(app *fyne.App, state *AppState) {
+func openAboutDialog(app fyne.App, state *AppState) {
 	if state.aboutWindow == nil {
-		window := (*app).NewWindow("Gordle")
+		window := app.NewWindow("Gordle")
 		window.SetFixedSize(true)
 
 		aboutPart1 := widget.NewRichTextFromMarkdown(string(resourceAboutpart1Md.Content()))
 		exampleRect := canvas.NewRectangle(c.Transparent)
 		exampleRect.SetMinSize(fyne.NewSize(331, 69))
-		example := container.New(layout.NewMaxLayout(), exampleRect, widget.NewIcon(resourceExamplePng))
+		example := container.New(layout.NewStackLayout(), exampleRect, widget.NewIcon(resourceExamplePng))
 		aboutPart2 := widget.NewRichTextFromMarkdown(string(resourceAboutpart2Md.Content()))
 
 		about := container.NewVBox(aboutPart1, container.New(layout.NewHBoxLayout(), example), aboutPart2)
@@ -179,8 +181,6 @@ func statusMessage(state *AppState) *fyne.Container {
 		message = state.errorMessage
 	}
 
-	container := container.New(layout.NewMaxLayout())
-
 	blackBox := canvas.NewRectangle(c.Transparent)
 	if message != "" {
 		blackBox.FillColor = black
@@ -188,16 +188,13 @@ func statusMessage(state *AppState) *fyne.Container {
 	blackBox.SetMinSize(fyne.NewSize(0, 50))
 	blackBox.StrokeWidth = 15
 	blackBox.StrokeColor = white
-	container.Add(blackBox)
 
 	statusText := canvas.NewText(message, white)
 	statusText.Alignment = fyne.TextAlignCenter
 	statusText.TextSize = 14
 	statusText.TextStyle.Bold = true
 
-	container.Add(statusText)
-
-	return container
+	return container.NewStack(blackBox, statusText)
 }
 
 func wordRows(state *AppState) *fyne.Container {
@@ -263,9 +260,7 @@ func letterBox(letter string, color Color) *fyne.Container {
 	text.Alignment = fyne.TextAlignCenter
 	text.TextSize = 32
 	text.TextStyle.Bold = true
-	content := container.New(layout.NewMaxLayout(), box, text)
-
-	return content
+	return container.NewStack(box, text)
 }
 
 func currentWordLetterBox(letter string) *fyne.Container {
@@ -278,9 +273,7 @@ func currentWordLetterBox(letter string) *fyne.Container {
 	text.Alignment = fyne.TextAlignCenter
 	text.TextSize = 32
 	text.TextStyle.Bold = true
-	content := container.New(layout.NewMaxLayout(), box, text)
-
-	return content
+	return container.NewStack(box, text)
 }
 
 func emptyLetterBox() *canvas.Rectangle {
@@ -291,7 +284,7 @@ func emptyLetterBox() *canvas.Rectangle {
 	return box
 }
 
-func keyboard(app *fyne.App, state *AppState, window fyne.Window) *fyne.Container {
+func keyboard(app fyne.App, state *AppState, window fyne.Window) *fyne.Container {
 	letterRows := [][]string{
 		{"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"},
 		{"A", "S", "D", "F", "G", "H", "J", "K", "L"},
@@ -364,17 +357,16 @@ func decorateButton(button *widget.Button, bgColor c.Color, fgColor c.Color, siz
 	if fgColor == nil {
 		fgColor = black
 	}
-	letter := button.Text
-	button.Text = ""
-	rectangle := canvas.NewRectangle(bgColor)
-	rectangle.SetMinSize(size)
-	text := canvas.NewText(letter, fgColor)
-	text.Alignment = fyne.TextAlignCenter
-	text.TextStyle.Bold = true
-	return container.New(
-		layout.NewMaxLayout(),
-		rectangle,
-		text,
+	button.Importance = widget.LowImportance
+
+	bg := canvas.NewRectangle(bgColor)
+	bg.SetMinSize(size)
+	border := canvas.NewRectangle(c.Transparent)
+	border.StrokeWidth = 2.0
+	border.StrokeColor = grey
+	return container.NewStack(
+		bg,
 		button,
+		border,
 	)
 }
