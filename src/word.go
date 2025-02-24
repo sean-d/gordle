@@ -12,8 +12,8 @@ type Word struct {
 }
 
 func init() {
-	if !sort.StringsAreSorted(validWords) {
-		sort.Strings(validWords)
+	if !sort.StringsAreSorted(fiveLetterWords) {
+		sort.Strings(fiveLetterWords)
 	}
 	// Sort all theme word lists
 	for i := range AllThemes {
@@ -30,8 +30,8 @@ func isValidWord(letters string) bool {
 		return i < len(CurrentTheme.Words) && CurrentTheme.Words[i] == letters
 	}
 	// For classic mode, use the full word list
-	i := sort.SearchStrings(validWords, letters)
-	return i < len(validWords) && validWords[i] == letters
+	i := sort.SearchStrings(fiveLetterWords, letters)
+	return i < len(fiveLetterWords) && fiveLetterWords[i] == letters
 }
 
 var validWordRegex = regexp.MustCompile("[A-Z]{5}")
@@ -54,7 +54,7 @@ func RandomWord() Word {
 	if CurrentTheme.Name != ClassicTheme.Name {
 		wordList = CurrentTheme.Words
 	} else {
-		wordList = validWords
+		wordList = fiveLetterWords
 	}
 	if len(wordList) == 0 {
 		// Fallback to classic theme if current theme has no words

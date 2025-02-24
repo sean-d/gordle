@@ -34,7 +34,7 @@ var (
 	ClassicTheme = Theme{
 		Name:        "Classic",
 		Description: "The original word list with all words",
-		Words:       validWords,
+		Words:       fiveLetterWords,
 	}
 )
 
