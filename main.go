@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	gordle "github.com/scastiel/gordle/src"
+	gordle "github.com/sean-d/gordle/src"
 )
 
 func init() {

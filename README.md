@@ -1,16 +1,17 @@
 # Gordle – Yet another Wordle clone
 
-[![Go](https://github.com/scastiel/gordle/workflows/Go/badge.svg)](https://github.com/scastiel/gordle/actions/workflows/go.yml)
+- The original Gordle was created by [scastiel](https://github.com/scastiel/gordle).
+- andydotxyz forked the above [here](https://github.com/andydotxyz/gordle) and updated the version of Fyne, added some nice API updates, and addressed the vendor folder.
+- I forked andydotxyz's version and created word themes (e.g. "sports", "food", "colors", "animals", etc.), and added a dark/light mode selection as per scastiel's original wishlist. I also updated the readme and help docs to reflect the changes made.
 
 ![Gordle Demo](assets/GordleDemo.gif)
 
 ## Features
 
-- [x] Works on macOS, should work on Linux and Windows as well (not tested)
-- [x] Letter color hints on the keyboard
-- [x] Start a new game (without restarting the app)
-- [ ] Share your performance
-- [ ] Dark theme
+- [x] Works on arm64/x64 macOS; should work on Linux and Windows as well (not tested)
+- [x] Classic wordle gameplay
+- [x] Select different word lists by theme
+- [x] Dark and light theme selection
 
 ## Prerequisites
 
@@ -19,7 +20,7 @@ To compile and run Gordle, you will need to have Go installed on your machine. R
 ## Install
 
 ```shell
-go install github.com/scastiel/gordle@latest
+go install github.com/sean-d/gordle@latest
 ```
 
 ## Run
@@ -43,8 +44,6 @@ fyne package
 ```
 
 A binary for your OS will be generated in the same directory.
-
-_(Tested only on my Mac M1 & Linux for now. Ping me if you tried on another platform and it worked, or not!)_
 
 ## License
 

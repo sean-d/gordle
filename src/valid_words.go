@@ -1,5 +1,37 @@
 package gordle
 
+var animalWords = []string{
+	"BEAST", "BISON", "BOAR", "BUNNY", "CALF", "CAMEL", "CHIMP", "COBRA", "COLT", "CRANE",
+	"CROW", "DEER", "DOVE", "DRAKE", "DUCK", "EAGLE", "FAUNA", "FERRET", "FINCH", "FROG",
+	"GECKO", "GOOSE", "GUPPY", "HERON", "HIPPO", "HORSE", "HYENA", "KOALA", "LARVA", "LEMUR",
+	"LLAMA", "LOUSE", "MIDGE", "MOOSE", "MOTH", "MOUSE", "OTTER", "PANDA", "POOCH", "PRAWN",
+	"PUPAL", "PUPPY", "QUAIL", "RAVEN", "RHINO", "ROBIN", "SHARK", "SHEEP", "SKUNK", "SNAKE",
+	"STEED", "STORK", "SWINE", "TAPIR", "TIGER", "TROUT", "VIPER", "WHALE", "WHELP", "WORM",
+	"ZEBRA",
+}
+
+var plantWords = []string{
+	"ALGAE", "APPLE", "ARBOR", "BASIL", "BEECH", "BERRY", "BIRCH", "BLOOM", "CACAO", "CEDAR",
+	"CHARD", "DAISY", "FICUS", "FLORA", "FROND", "FRUIT", "GOURD", "GRASS", "GROVE", "HERBS",
+	"HOLLY", "LEAF", "LEECH", "MAPLE", "MELON", "MOSSY", "OLIVE", "PALM", "PEACH", "PETAL",
+	"PINE", "PLANT", "POPPY", "REEDS", "ROOT", "ROSES", "SHRUB", "SPORE", "STALK", "STEM",
+	"THORN", "TREE", "TRUNK", "TUBER", "TULIP", "VINE", "WEED", "WHEAT", "WOOD",
+}
+
+var sportsWords = []string{
+	"ARENA", "BATON", "BENCH", "BLOCK", "BOARD", "BOXER", "CATCH", "COACH", "COURT", "CYCLE",
+	"DANCE", "DERBY", "FENCE", "FIELD", "FIGHT", "GAMES", "GUARD", "HORSE", "JUDGE", "MATCH",
+	"MEDAL", "MOUNT", "PITCH", "PUNCH", "RACE", "RACER", "RALLY", "RIDER", "RUGBY", "SCORE",
+	"SERVE", "SKATE", "SPORT", "SQUAD", "SWING", "TEAMS", "THROW", "TRACK", "TRAIN",
+}
+
+var foodWords = []string{
+	"APPLE", "BACON", "BAGEL", "BASIL", "BREAD", "BROTH", "CANDY", "CREAM", "CREPE", "CURRY",
+	"FEAST", "FLOUR", "FRUIT", "GRAPE", "GRAVY", "HONEY", "JUICE", "LEMON", "MAPLE", "MELON",
+	"OLIVE", "PASTA", "PEACH", "PIZZA", "SALAD", "SAUCE", "SPICE", "STEAK", "SUGAR", "SUSHI",
+	"SYRUP", "TOAST", "TREAT", "WATER", "WHEAT", "YEAST",
+}
+
 var validWords = []string{
 	"ABACK",
 	"ABASE",
@@ -883,7 +915,7 @@ var validWords = []string{
 	"GODLY",
 	"GOING",
 	"GOLEM",
-	"GOLLY",
+	"GOLRY",
 	"GONAD",
 	"GONER",
 	"GOODY",
