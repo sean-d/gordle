@@ -2,6 +2,7 @@ package gordle
 
 import (
 	"errors"
+	"fmt"
 )
 
 type Color string
@@ -17,16 +18,18 @@ type Feedback struct {
 }
 
 func (feedback *Feedback) IsWin() bool {
-	return feedback.Colors[0] == Green &&
-		feedback.Colors[1] == Green &&
-		feedback.Colors[2] == Green &&
-		feedback.Colors[3] == Green &&
-		feedback.Colors[4] == Green
+	for _, color := range feedback.Colors {
+		if color != Green {
+			return false
+		}
+	}
+	return true
 }
 
 func NewFeedback(colors []Color) (Feedback, error) {
-	if len(colors) != 5 {
-		return Feedback{}, errors.New("need 5 colors")
+	expectedLength := len(CurrentTheme.Words[0])
+	if len(colors) != expectedLength {
+		return Feedback{}, errors.New("need " + fmt.Sprint(expectedLength) + " colors")
 	}
 	for _, color := range colors {
 		if color != Grey && color != Yellow && color != Green {
@@ -37,8 +40,14 @@ func NewFeedback(colors []Color) (Feedback, error) {
 }
 
 func FromGuess(guess Word, solution Word) Feedback {
-	colors := []Color{Grey, Grey, Grey, Grey, Grey}
-	excluded := []bool{false, false, false, false, false}
+	wordLength := len(solution.Letters)
+	colors := make([]Color, wordLength)
+	excluded := make([]bool, wordLength)
+
+	for i := range colors {
+		colors[i] = Grey
+		excluded[i] = false
+	}
 
 	for i := range colors {
 		if guess.Letters[i] == solution.Letters[i] {

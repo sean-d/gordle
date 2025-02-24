@@ -31,7 +31,7 @@ func NewAppState() *AppState {
 }
 
 func (state AppState) typeLetter(letter string) AppState {
-	if state.game.State == Started && len(state.currentWord) < 5 {
+	if state.game.State == Started && len(state.currentWord) < len(CurrentTheme.Words[0]) {
 		state.currentWord += letter
 	}
 	return state

@@ -96,17 +96,6 @@ func StartFyneGame() {
 	window.ShowAndRun()
 }
 
-// Helper function to update window background color based on theme
-func updateWindowBackground(app fyne.App, window fyne.Window) {
-	isDark := false
-	if ct, ok := app.Settings().Theme().(*customTheme); ok {
-		isDark = ct.isDark
-	}
-	_, bgColor, _ := getThemeColors(isDark)
-	bg := canvas.NewRectangle(bgColor)
-	window.Canvas().SetContent(container.NewMax(bg))
-}
-
 func showThemeSelection(app fyne.App, window fyne.Window) {
 	// Get current dark mode setting
 	isDark := false
@@ -502,7 +491,8 @@ func wordRows(app fyne.App, state *AppState) *fyne.Container {
 }
 
 func wordRow(word Word, feedback Feedback) *fyne.Container {
-	grid := container.New(layout.NewGridLayout(5))
+	wordLength := len(word.Letters)
+	grid := container.New(layout.NewGridLayout(wordLength))
 	for i, letter := range strings.Split(word.Letters, "") {
 		color := feedback.Colors[i]
 		grid.Add(letterBox(letter, color))
@@ -511,19 +501,21 @@ func wordRow(word Word, feedback Feedback) *fyne.Container {
 }
 
 func currentWordRow(app fyne.App, word string) *fyne.Container {
-	grid := container.New(layout.NewGridLayout(5))
+	wordLength := len(CurrentTheme.Words[0]) // Get length from current theme's words
+	grid := container.New(layout.NewGridLayout(wordLength))
 	for _, letter := range strings.Split(word, "") {
 		grid.Add(currentWordLetterBox(app, letter))
 	}
-	for i := len(word); i < 5; i++ {
+	for i := len(word); i < wordLength; i++ {
 		grid.Add(emptyLetterBox(app))
 	}
 	return grid
 }
 
 func emptyWordRow(app fyne.App) *fyne.Container {
-	grid := container.New(layout.NewGridLayout(5))
-	for i := 0; i < 5; i++ {
+	wordLength := len(CurrentTheme.Words[0]) // Get length from current theme's words
+	grid := container.New(layout.NewGridLayout(wordLength))
+	for i := 0; i < wordLength; i++ {
 		grid.Add(emptyLetterBox(app))
 	}
 	return grid

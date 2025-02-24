@@ -24,27 +24,15 @@ func init() {
 }
 
 func isValidWord(letters string) bool {
-	// For themed games, only allow words from the current theme
-	if CurrentTheme.Name != ClassicTheme.Name {
-		i := sort.SearchStrings(CurrentTheme.Words, letters)
-		return i < len(CurrentTheme.Words) && CurrentTheme.Words[i] == letters
-	}
-	// For classic mode, use the full word list
-	i := sort.SearchStrings(fiveLetterWords, letters)
-	return i < len(fiveLetterWords) && fiveLetterWords[i] == letters
+	// For all themes (including classic), use the current theme's word list
+	i := sort.SearchStrings(CurrentTheme.Words, letters)
+	return i < len(CurrentTheme.Words) && CurrentTheme.Words[i] == letters
 }
 
-var validWordRegex = regexp.MustCompile("[A-Z]{5}")
-
 func NewWord(letters string) (Word, error) {
-	if !validWordRegex.MatchString(letters) {
+	expectedLength := len(CurrentTheme.Words[0])
+	if len(letters) != expectedLength || !regexp.MustCompile("[A-Z]+").MatchString(letters) {
 		return Word{}, errors.New("invalid word")
-	}
-	if !isValidWord(letters) {
-		if CurrentTheme.Name != ClassicTheme.Name {
-			return Word{}, errors.New("word not in " + CurrentTheme.Name + " theme")
-		}
-		return Word{}, errors.New("unknown word")
 	}
 	return Word{Letters: letters}, nil
 }
