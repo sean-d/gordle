@@ -4,6 +4,7 @@
 //go:generate fyne bundle -package gordle -o resources.go -append assets/about_part1.md
 //go:generate fyne bundle -package gordle -o resources.go -append assets/about_part2.md
 
+// Package gordle implements a Wordle clone game in Go using the Fyne toolkit.
 package gordle
 
 import (
@@ -21,20 +22,25 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-var green = c.RGBA{R: 106, G: 170, B: 100, A: 255}
-var yellow = c.RGBA{R: 201, G: 180, B: 88, A: 255}
-var grey = c.RGBA{R: 120, G: 124, B: 126, A: 255}
-var darkGrey = c.RGBA{R: 58, G: 58, B: 60, A: 255}
-var lightGrey = c.RGBA{R: 211, G: 215, B: 218, A: 255}
-var black = c.Black
-var white = c.White
-var darkBackground = c.RGBA{R: 18, G: 18, B: 19, A: 255}
+// Color constants for the game UI
+var (
+	green = c.RGBA{R: 106, G: 170, B: 100, A: 255} // Correct letter, correct position
+	yellow = c.RGBA{R: 201, G: 180, B: 88, A: 255} // Correct letter, wrong position
+	grey = c.RGBA{R: 120, G: 124, B: 126, A: 255} // Letter not in word
+	darkGrey = c.RGBA{R: 58, G: 58, B: 60, A: 255} // UI element background (dark mode)
+	lightGrey = c.RGBA{R: 211, G: 215, B: 218, A: 255} // UI element background (light mode)
+	black = c.Black
+	white = c.White
+	darkBackground = c.RGBA{R: 18, G: 18, B: 19, A: 255} // Main background (dark mode)
+)
 
+// customTheme implements a custom Fyne theme with dark/light mode support
 type customTheme struct {
 	fyne.Theme
 	isDark bool
 }
 
+// Color returns the appropriate color for UI elements based on theme variant
 func (t *customTheme) Color(n fyne.ThemeColorName, v fyne.ThemeVariant) c.Color {
 	if t.isDark {
 		if n == theme.ColorNameBackground {
@@ -54,19 +60,23 @@ func (t *customTheme) Color(n fyne.ThemeColorName, v fyne.ThemeVariant) c.Color 
 	return t.Theme.Color(n, theme.VariantLight)
 }
 
+// Size returns the size for UI elements
 func (t *customTheme) Size(n fyne.ThemeSizeName) float32 {
 	return t.Theme.Size(n)
 }
 
+// Font returns the font for text elements
 func (t *customTheme) Font(s fyne.TextStyle) fyne.Resource {
 	return t.Theme.Font(s)
 }
 
+// Icon returns the icon for UI elements
 func (t *customTheme) Icon(n fyne.ThemeIconName) fyne.Resource {
 	return t.Theme.Icon(n)
 }
 
-// Colors that adapt to theme
+// getThemeColors returns the appropriate colors for text, background, and keyboard
+// based on whether dark mode is enabled
 func getThemeColors(isDark bool) (textColor, bgColor, keyBgColor c.Color) {
 	if isDark {
 		return lightGrey, darkBackground, darkGrey
@@ -74,6 +84,8 @@ func getThemeColors(isDark bool) (textColor, bgColor, keyBgColor c.Color) {
 	return black, white, lightGrey
 }
 
+// StartFyneGame initializes and starts the Gordle game application.
+// It sets up the main window, theme, and initial game state.
 func StartFyneGame() {
 	app := app.New()
 	app.SetIcon(resourceAppIconPng)
@@ -96,6 +108,10 @@ func StartFyneGame() {
 	window.ShowAndRun()
 }
 
+// showThemeSelection displays the theme selection screen where players can:
+// - Choose between light and dark mode
+// - Select a game theme (Classic, Difficult, etc.)
+// - View theme descriptions and word counts
 func showThemeSelection(app fyne.App, window fyne.Window) {
 	// Get current dark mode setting
 	isDark := false
@@ -199,6 +215,12 @@ func showThemeSelection(app fyne.App, window fyne.Window) {
 	window.Show()
 }
 
+// createThemeCard creates a clickable card for a game theme.
+// Each card displays:
+// - Theme name in large, bold text
+// - Theme description
+// - Number of available words
+// The card triggers theme selection and game start when clicked.
 func createThemeCard(theme Theme, app fyne.App, window fyne.Window) *fyne.Container {
 	// Get current theme state
 	isDark := false
@@ -252,6 +274,11 @@ func createThemeCard(theme Theme, app fyne.App, window fyne.Window) *fyne.Contai
 	return container.NewStack(rect, card)
 }
 
+// startGame initializes a new game with the selected theme.
+// It sets up:
+// - Keyboard input handling
+// - Game board display
+// - Game state management
 func startGame(app fyne.App, window fyne.Window) {
 	// Get current theme state
 	isDark := false
@@ -323,6 +350,7 @@ func startGame(app fyne.App, window fyne.Window) {
 
 var errorTicker *time.Ticker
 
+// displayError shows an error message for 1 second then auto-clears it
 func displayError(app fyne.App, state *AppState, window fyne.Window) {
 	if errorTicker != nil {
 		errorTicker.Stop()
@@ -338,6 +366,12 @@ func displayError(app fyne.App, state *AppState, window fyne.Window) {
 	}()
 }
 
+// render updates the game UI to reflect the current state.
+// It displays:
+// - Game header with icon
+// - Status messages (errors, win/loss)
+// - Word grid with guesses and feedback
+// - Virtual keyboard with color-coded keys
 func render(app fyne.App, state *AppState, window fyne.Window) {
 	isDark := false
 	if ct, ok := app.Settings().Theme().(*customTheme); ok {
@@ -361,6 +395,11 @@ func render(app fyne.App, state *AppState, window fyne.Window) {
 	window.SetContent(container.NewMax(bg, content))
 }
 
+// header creates the game header with:
+// - App icon
+// - Title
+// - Help button
+// - Separator line
 func header(app fyne.App, state *AppState) *fyne.Container {
 	header := container.New(layout.NewVBoxLayout())
 
@@ -414,6 +453,10 @@ func header(app fyne.App, state *AppState) *fyne.Container {
 	return header
 }
 
+// openAboutDialog displays the help/about window with:
+// - Game rules
+// - Example gameplay
+// - Color meaning explanations
 func openAboutDialog(app fyne.App, state *AppState) {
 	if state.aboutWindow == nil {
 		window := app.NewWindow("Gordle")
@@ -438,6 +481,10 @@ func openAboutDialog(app fyne.App, state *AppState) {
 	}
 }
 
+// statusMessage creates a message box for:
+// - Win/loss messages
+// - Error messages
+// - Instructions for next action
 func statusMessage(app fyne.App, state *AppState) *fyne.Container {
 	isDark := false
 	if ct, ok := app.Settings().Theme().(*customTheme); ok {
@@ -473,6 +520,10 @@ func statusMessage(app fyne.App, state *AppState) *fyne.Container {
 	return container.NewStack(messageBox, statusText)
 }
 
+// wordRows creates the game board grid showing:
+// - Previous guesses with color feedback
+// - Current guess being typed
+// - Empty rows for remaining guesses
 func wordRows(app fyne.App, state *AppState) *fyne.Container {
 	rows := container.New(layout.NewVBoxLayout())
 	for i, guess := range state.guesses {
@@ -575,6 +626,10 @@ func emptyLetterBox(app fyne.App) *canvas.Rectangle {
 	return box
 }
 
+// keyboard creates the virtual keyboard with:
+// - Letter keys in QWERTY layout
+// - Enter and Backspace keys
+// - Color-coded feedback based on guesses
 func keyboard(app fyne.App, state *AppState, window fyne.Window) *fyne.Container {
 	isDark := false
 	if ct, ok := app.Settings().Theme().(*customTheme); ok {

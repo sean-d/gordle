@@ -1,3 +1,5 @@
+// Package gordle implements a Wordle clone game in Go using the Fyne toolkit.
+// It provides functionality for word validation, feedback generation, and game state management.
 package gordle
 
 import (
@@ -7,10 +9,14 @@ import (
 	"sort"
 )
 
+// Word represents a word in the game, containing a string of uppercase letters.
+// The length of the word depends on the current theme's word length (5-8 letters).
 type Word struct {
 	Letters string
 }
 
+// init initializes the word lists by sorting them for efficient binary search.
+// This ensures that word validation can be performed quickly during gameplay.
 func init() {
 	if !sort.StringsAreSorted(fiveLetterWords) {
 		sort.Strings(fiveLetterWords)
@@ -23,12 +29,11 @@ func init() {
 	}
 }
 
-func isValidWord(letters string) bool {
-	// For all themes (including classic), use the current theme's word list
-	i := sort.SearchStrings(CurrentTheme.Words, letters)
-	return i < len(CurrentTheme.Words) && CurrentTheme.Words[i] == letters
-}
-
+// NewWord creates a new Word instance after validating the input letters.
+// It checks that:
+// - The length matches the current theme's word length
+// - The letters are all uppercase
+// Returns an error if validation fails.
 func NewWord(letters string) (Word, error) {
 	expectedLength := len(CurrentTheme.Words[0])
 	if len(letters) != expectedLength || !regexp.MustCompile("[A-Z]+").MatchString(letters) {
@@ -37,6 +42,9 @@ func NewWord(letters string) (Word, error) {
 	return Word{Letters: letters}, nil
 }
 
+// RandomWord generates a random word from the appropriate word list based on the current theme.
+// For the Chaos theme, it randomly selects a word length (5-8) before choosing a word.
+// If the current theme has no words, it falls back to the Classic theme.
 func RandomWord() Word {
 	var wordList []string
 
