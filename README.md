@@ -2,7 +2,7 @@
 
 - The original Gordle was created by [scastiel](https://github.com/scastiel/gordle).
 - andydotxyz forked the above [here](https://github.com/andydotxyz/gordle) and updated the version of Fyne, added some nice API updates, and addressed the vendor folder.
-- I forked andydotxyz's version and created word themes (e.g. "sports", "food", "colors", "animals", etc.), and added a dark/light mode selection as per scastiel's original wishlist. I also updated the readme and help docs to reflect the changes made.
+- I forked andydotxyz's version and added in difficulty settings (word length), and added a dark/light mode selection as per scastiel's original wishlist.
 
 ![Gordle Demo](assets/GordleDemo.gif)
 
@@ -10,8 +10,8 @@
 
 - [x] Works on arm64/x64 macOS; should work on Linux and Windows as well (not tested)
 - [x] Classic wordle gameplay
-- [x] Select different word lists by theme
-- [x] Dark and light theme selection
+- [x] Select different difficulties that are based on word length.
+- [x] Dark and light theme selection (Dark by default)
 
 ## Prerequisites
 

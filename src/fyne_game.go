@@ -84,8 +84,13 @@ func StartFyneGame() {
 		app.Quit()
 	})
 
-	// Set initial window background color
-	updateWindowBackground(app, window)
+	isDark := true
+	_, bgColor, _ := getThemeColors(isDark)
+	bg := canvas.NewRectangle(bgColor)
+
+	// Create initial content container
+	content := container.NewMax(bg)
+	window.SetContent(content)
 
 	showThemeSelection(app, window)
 	window.ShowAndRun()
@@ -98,7 +103,8 @@ func updateWindowBackground(app fyne.App, window fyne.Window) {
 		isDark = ct.isDark
 	}
 	_, bgColor, _ := getThemeColors(isDark)
-	window.Canvas().SetContent(canvas.NewRectangle(bgColor))
+	bg := canvas.NewRectangle(bgColor)
+	window.Canvas().SetContent(container.NewMax(bg))
 }
 
 func showThemeSelection(app fyne.App, window fyne.Window) {
@@ -112,19 +118,42 @@ func showThemeSelection(app fyne.App, window fyne.Window) {
 	newTheme := &customTheme{Theme: theme.DefaultTheme(), isDark: isDark}
 	app.Settings().SetTheme(newTheme)
 
-	// Update window background color
-	updateWindowBackground(app, window)
+	// Create background
+	_, bgColor, _ := getThemeColors(isDark)
+	bg := canvas.NewRectangle(bgColor)
 
 	mainContainer := container.NewVBox()
+
+	// Add header with icon
+	header := container.New(layout.NewVBoxLayout())
+	iconRect := canvas.NewRectangle(c.Transparent)
+	iconRect.SetMinSize(fyne.NewSize(48, 48))
+	icon := widget.NewIcon(resourceAppIconSvg)
+	iconBox := container.NewStack(iconRect, icon)
 
 	// Update title and description colors based on theme
 	textColor, _, _ := getThemeColors(isDark)
 
-	title := canvas.NewText("gordle (go + wordle...see what I did there?)", textColor)
+	title := canvas.NewText("Welcome To Gordle", textColor)
 	title.TextSize = 24
 	title.TextStyle.Bold = true
 	title.Alignment = fyne.TextAlignCenter
-	mainContainer.Add(title)
+
+	titleRow := container.New(layout.NewBorderLayout(nil, nil, iconBox, nil))
+	titleRow.Add(iconBox)
+	titleRow.Add(title)
+
+	header.Add(titleRow)
+
+	borderColor := lightGrey
+	if isDark {
+		borderColor = darkGrey
+	}
+	border := canvas.NewRectangle(borderColor)
+	border.SetMinSize(fyne.NewSize(0, 5))
+	header.Add(border)
+
+	mainContainer.Add(header)
 
 	// Add mode selection buttons
 	modeContainer := container.NewHBox()
@@ -176,7 +205,7 @@ func showThemeSelection(app fyne.App, window fyne.Window) {
 		mainContainer.Add(space)
 	}
 
-	window.SetContent(mainContainer)
+	window.SetContent(container.NewMax(bg, mainContainer))
 	window.Resize(fyne.NewSize(400, 500))
 	window.Show()
 }
