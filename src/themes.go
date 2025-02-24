@@ -7,43 +7,36 @@ type Theme struct {
 }
 
 var (
-	AnimalTheme = Theme{
-		Name:        "Animals",
-		Description: "Test your knowledge of the animal kingdom",
-		Words:       animalWords,
-	}
-
-	PlantTheme = Theme{
-		Name:        "Plants",
-		Description: "A botanical challenge",
-		Words:       plantWords,
-	}
-
-	SportsTheme = Theme{
-		Name:        "Sports",
-		Description: "For the sports enthusiasts",
-		Words:       sportsWords,
-	}
-
-	FoodTheme = Theme{
-		Name:        "Food & Drink",
-		Description: "Delicious five-letter treats",
-		Words:       foodWords,
-	}
-
 	ClassicTheme = Theme{
 		Name:        "Classic",
-		Description: "The original word list with all words",
+		Description: "The original list with 5 letter words",
 		Words:       fiveLetterWords,
+	}
+
+	DifficultTheme = Theme{
+		Name:        "Difficult",
+		Description: "Challenge yourself with 6 letter words",
+		Words:       sixLetterWords,
+	}
+
+	HardTheme = Theme{
+		Name:        "Hard",
+		Description: "Test your skills with 7 letter words",
+		Words:       sevenLetterWords,
+	}
+
+	SoulsTheme = Theme{
+		Name:        "Souls",
+		Description: "The ultimate challenge with 8 letter words",
+		Words:       eightLetterWords,
 	}
 )
 
 var AllThemes = []Theme{
 	ClassicTheme,
-	AnimalTheme,
-	PlantTheme,
-	SportsTheme,
-	FoodTheme,
+	DifficultTheme,
+	HardTheme,
+	SoulsTheme,
 }
 
 var CurrentTheme = ClassicTheme

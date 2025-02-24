@@ -77,7 +77,7 @@ func getThemeColors(isDark bool) (textColor, bgColor, keyBgColor c.Color) {
 func StartFyneGame() {
 	app := app.New()
 	app.SetIcon(resourceAppIconPng)
-	app.Settings().SetTheme(&customTheme{Theme: theme.DefaultTheme(), isDark: false})
+	app.Settings().SetTheme(&customTheme{Theme: theme.DefaultTheme(), isDark: true})
 	window := app.NewWindow("Gordle")
 	window.SetFixedSize(true)
 	window.SetCloseIntercept(func() {
@@ -120,7 +120,7 @@ func showThemeSelection(app fyne.App, window fyne.Window) {
 	// Update title and description colors based on theme
 	textColor, _, _ := getThemeColors(isDark)
 
-	title := canvas.NewText("Welcome To Gordle", textColor)
+	title := canvas.NewText("gordle (go + wordle...see what I did there?)", textColor)
 	title.TextSize = 24
 	title.TextStyle.Bold = true
 	title.Alignment = fyne.TextAlignCenter
@@ -129,12 +129,12 @@ func showThemeSelection(app fyne.App, window fyne.Window) {
 	// Add mode selection buttons
 	modeContainer := container.NewHBox()
 
-	lightButton := widget.NewButton("Light Mode", func() {
+	lightButton := widget.NewButton("eye bleed mode (light)", func() {
 		newTheme := &customTheme{Theme: theme.DefaultTheme(), isDark: false}
 		app.Settings().SetTheme(newTheme)
 		showThemeSelection(app, window)
 	})
-	darkButton := widget.NewButton("Dark Mode", func() {
+	darkButton := widget.NewButton("save your eyes mode (dark)", func() {
 		newTheme := &customTheme{Theme: theme.DefaultTheme(), isDark: true}
 		app.Settings().SetTheme(newTheme)
 		showThemeSelection(app, window)
@@ -157,7 +157,7 @@ func showThemeSelection(app fyne.App, window fyne.Window) {
 	spaceAfterButtons.SetMinSize(fyne.NewSize(0, 10))
 	mainContainer.Add(spaceAfterButtons)
 
-	description := canvas.NewText("Select a theme below to start playing", textColor)
+	description := canvas.NewText("select your difficulty", textColor)
 	description.TextSize = 16
 	description.Alignment = fyne.TextAlignCenter
 	mainContainer.Add(description)
