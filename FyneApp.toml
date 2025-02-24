@@ -5,4 +5,4 @@ Website = "https://scastiel.dev"
   Name = "Gordle"
   ID = "dev.scastiel.gordle"
   Version = "2.0.0"
-  Build = 13
+  Build = 14

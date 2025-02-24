@@ -368,8 +368,6 @@ func header(app fyne.App, state *AppState) *fyne.Container {
 		helpBgColor = darkGrey
 		helpFgColor = lightGrey
 	}
-
-	// Style the help button
 	helpButtonRect := canvas.NewRectangle(c.Transparent)
 	helpButtonRect.SetMinSize(fyne.NewSize(48, 48))
 	helpButton := widget.NewButton("?", func() { openAboutDialog(app, state) })
@@ -378,7 +376,7 @@ func header(app fyne.App, state *AppState) *fyne.Container {
 		decorateButton(app, helpButton, helpBgColor, helpFgColor, fyne.NewSize(48, 48)),
 	)
 
-	// Add help button to the right
+	// Add both theme and help buttons to the right
 	rightButtons := container.NewHBox(helpButtonBox)
 	titleRow := container.New(layout.NewBorderLayout(nil, nil, iconBox, rightButtons))
 	titleRow.Add(iconBox)
@@ -676,10 +674,8 @@ func decorateButton(app fyne.App, button *widget.Button, bgColor c.Color, fgColo
 	border.StrokeWidth = 2.0
 	border.StrokeColor = darkGrey
 
-	button.Importance = widget.MediumImportance
-	if !isDark {
-		button.Importance = widget.LowImportance
-	}
+	// Use LowImportance for both light and dark modes to ensure consistent coloring
+	button.Importance = widget.LowImportance
 
 	return container.NewStack(
 		bg,
