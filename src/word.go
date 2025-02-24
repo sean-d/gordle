@@ -39,11 +39,25 @@ func NewWord(letters string) (Word, error) {
 
 func RandomWord() Word {
 	var wordList []string
-	if CurrentTheme.Name != ClassicTheme.Name {
+
+	if CurrentTheme.Name == "Chaos" {
+		// For Chaos mode, randomly select which word list to use
+		allWordLists := [][]string{
+			fiveLetterWords,
+			sixLetterWords,
+			sevenLetterWords,
+			eightLetterWords,
+		}
+		selectedList := allWordLists[rand.Intn(len(allWordLists))]
+		// Update the current theme's word list
+		CurrentTheme.Words = selectedList
+		wordList = selectedList
+	} else if CurrentTheme.Name != ClassicTheme.Name {
 		wordList = CurrentTheme.Words
 	} else {
 		wordList = fiveLetterWords
 	}
+
 	if len(wordList) == 0 {
 		// Fallback to classic theme if current theme has no words
 		wordList = ClassicTheme.Words

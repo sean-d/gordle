@@ -30,6 +30,12 @@ var (
 		Description: "The ultimate challenge with 8 letter words",
 		Words:       eightLetterWords,
 	}
+
+	ChaosTheme = Theme{
+		Name:        "Chaos",
+		Description: "Random word length (5-8 letters) each game - pure chaos!",
+		Words:       append(append(append(fiveLetterWords, sixLetterWords...), sevenLetterWords...), eightLetterWords...),
+	}
 )
 
 var AllThemes = []Theme{
@@ -37,6 +43,7 @@ var AllThemes = []Theme{
 	DifficultTheme,
 	HardTheme,
 	SoulsTheme,
+	ChaosTheme,
 }
 
 var CurrentTheme = ClassicTheme
